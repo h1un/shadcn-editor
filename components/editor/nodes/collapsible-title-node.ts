@@ -53,6 +53,7 @@ export class CollapsibleTitleNode extends ElementNode {
       'outline-none',
       'cursor-pointer',
       'marker:text-gray-400',
+      'list-inside',
     )
 
     const collapsibleContainer = this.getParentOrThrow();
@@ -78,6 +79,21 @@ export class CollapsibleTitleNode extends ElementNode {
         })
       })
     }
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeName === 'P') {
+              (node as HTMLElement).classList.add('inline-flex');
+            }
+          });
+        }
+      });
+    });
+
+    observer.observe(dom, { childList: true, subtree: true });
+
     return dom
   }
 
