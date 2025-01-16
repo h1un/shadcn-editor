@@ -50,10 +50,20 @@ export class CollapsibleTitleNode extends ElementNode {
       'pl-4',
       'relative',
       'font-bold',
-      'list-none',
       'outline-none',
-      'cursor-pointer'
+      'cursor-pointer',
+      'marker:text-gray-400',
     )
+
+    const collapsibleContainer = this.getParentOrThrow();
+    invariant(
+      $isCollapsibleContainerNode(collapsibleContainer),
+      'Expected parent node to be a CollapsibleContainerNode'
+    )
+    dom.classList.add(
+      collapsibleContainer.getOpen() ? 'list-[disclosure-open]' : 'list-[disclosure-closed]'
+    );
+
     if (IS_CHROME) {
       dom.addEventListener('click', () => {
         editor.update(() => {
@@ -62,7 +72,9 @@ export class CollapsibleTitleNode extends ElementNode {
             $isCollapsibleContainerNode(collapsibleContainer),
             'Expected parent node to be a CollapsibleContainerNode'
           )
-          collapsibleContainer.toggleOpen()
+          collapsibleContainer.toggleOpen();
+          dom.classList.toggle('list-[disclosure-open]', collapsibleContainer.getOpen());
+          dom.classList.toggle('list-[disclosure-closed]', !collapsibleContainer.getOpen());
         })
       })
     }
