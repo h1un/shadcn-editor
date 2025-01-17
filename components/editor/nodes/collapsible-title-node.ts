@@ -45,26 +45,7 @@ export class CollapsibleTitleNode extends ElementNode {
 
   createDOM(config: EditorConfig, editor: LexicalEditor): HTMLElement {
     const dom = document.createElement('summary')
-    dom.classList.add(
-      'p-1',
-      'pl-4',
-      'relative',
-      'font-bold',
-      'outline-none',
-      'cursor-pointer',
-      'marker:text-gray-400',
-      'list-inside',
-    )
-
-    const collapsibleContainer = this.getParentOrThrow();
-    invariant(
-      $isCollapsibleContainerNode(collapsibleContainer),
-      'Expected parent node to be a CollapsibleContainerNode'
-    )
-    dom.classList.add(
-      collapsibleContainer.getOpen() ? 'list-[disclosure-open]' : 'list-[disclosure-closed]'
-    );
-
+    dom.classList.add('Collapsible__title')
     if (IS_CHROME) {
       dom.addEventListener('click', () => {
         editor.update(() => {
@@ -73,27 +54,10 @@ export class CollapsibleTitleNode extends ElementNode {
             $isCollapsibleContainerNode(collapsibleContainer),
             'Expected parent node to be a CollapsibleContainerNode'
           )
-          collapsibleContainer.toggleOpen();
-          dom.classList.toggle('list-[disclosure-open]', collapsibleContainer.getOpen());
-          dom.classList.toggle('list-[disclosure-closed]', !collapsibleContainer.getOpen());
+          collapsibleContainer.toggleOpen()
         })
       })
     }
-
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'childList') {
-          mutation.addedNodes.forEach((node) => {
-            if (node.nodeName === 'P') {
-              (node as HTMLElement).classList.add('inline-flex');
-            }
-          });
-        }
-      });
-    });
-
-    observer.observe(dom, { childList: true, subtree: true });
-
     return dom
   }
 
